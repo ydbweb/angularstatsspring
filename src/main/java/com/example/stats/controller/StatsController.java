@@ -28,14 +28,14 @@ public class StatsController {
 	
 	private List<String> excludeItemsTop=Arrays.asList("19030", "20879", "23729"); 
 	
-	@CrossOrigin(origins = "https://ydbweb.com")
+	@CrossOrigin(origins = "*")
 	@GetMapping("/mainitems")
 	public List<MainItemInt> getMainItems() throws JsonProcessingException{
 
 		return statserv.getMainItems(this.excludeItemsTop);
 	}
 	
-	@CrossOrigin(origins = "https://ydbweb.com")
+	@CrossOrigin(origins = "*")
 	@GetMapping("/mainitemanditemname")
 	public String getItemsAndMainItemName(@RequestParam String itemid) throws JsonProcessingException{
 		ObjectMapper mapper = new ObjectMapper();
@@ -43,7 +43,7 @@ public class StatsController {
 		return mapper.writeValueAsString(statserv.getItemsAndMainItemName(itemid));
 	}		
 	
-	@CrossOrigin(origins = "https://ydbweb.com")
+	@CrossOrigin(origins = "*")
 	@GetMapping("/items")
 	public String getItems(@RequestParam String mainitemid) throws JsonProcessingException{
 		ObjectMapper mapper = new ObjectMapper();
@@ -51,7 +51,7 @@ public class StatsController {
 		return mapper.writeValueAsString(statserv.getItems(mainitemid, this.excludeItemsTop));
 	}		
 	
-	@CrossOrigin(origins = "https://ydbweb.com")
+	@CrossOrigin(origins = "*")
 	@GetMapping("/itemsanddata")
 	public String getItemsAndData(@RequestParam String mainitemid) throws JsonProcessingException{
 		ObjectMapper mapper = new ObjectMapper();
@@ -59,7 +59,7 @@ public class StatsController {
 		return mapper.writeValueAsString(statserv.getItemsAndData(mainitemid));
 	}	
 	
-	@CrossOrigin(origins = "https://ydbweb.com")
+	@CrossOrigin(origins = "*")
 	@GetMapping("/oneitemsnames")
 	public String getItemsAndNamesForOneItem(@RequestParam String mainitemid) throws JsonProcessingException{
 		ObjectMapper mapper = new ObjectMapper();
@@ -67,7 +67,7 @@ public class StatsController {
 		return mapper.writeValueAsString(statserv.getItemsAndNamesForOneItem(mainitemid, this.excludeItemsTop));
 	}	
 	
-	@CrossOrigin(origins = "https://ydbweb.com")
+	@CrossOrigin(origins = "*")
 	@GetMapping("/oneitemsdata")
 	public String getItemsAndDataForOneItem(@RequestParam String mainitemid, String itemid) throws JsonProcessingException{
 		ObjectMapper mapper = new ObjectMapper();
@@ -76,13 +76,13 @@ public class StatsController {
 	}	
 		
 	
-	/*
+	
 
-	@CrossOrigin(origins = "https://ydbweb.com")
+	@CrossOrigin(origins = "*")
 	@GetMapping("/mainitemsimp")
 	public List<String[]> getMainItem() throws FileNotFoundException, IOException {
 		return statserv.generateTables();
 	}	
 
-	*/
+	
 }

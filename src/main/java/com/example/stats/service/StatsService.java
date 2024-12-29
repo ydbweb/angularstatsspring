@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.example.stats.entity.Items;
 import com.example.stats.entity.ItemsData;
 import com.example.stats.entity.MainItem;
-import com.example.stats.pojo.ImportData;
+import com.example.stats.repository.ImportData;
 import com.example.stats.pojo.ItemWithNameInt;
 import com.example.stats.pojo.MainItemInt;
 import com.example.stats.repository.ItemsDataRepository;
@@ -100,7 +100,7 @@ public class StatsService {
 		int[] listtables= {0,1,2,3,4,5,6};		
 		//recs.get(0);
 		MainItem mainitem = new MainItem();
-		mainitem.setName("Countries");
+		mainitem.setName("cereals");
 		em.persist(mainitem);		
 		
 		for (int i =0; i < 7;i++) {

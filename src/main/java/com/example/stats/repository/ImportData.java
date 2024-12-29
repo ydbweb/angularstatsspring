@@ -1,4 +1,4 @@
-package com.example.stats.pojo;
+package com.example.stats.repository;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -17,12 +17,12 @@ public class ImportData {
     public List<String[]> generateTables() throws FileNotFoundException, IOException{    
     	List<String[]> records=new ArrayList<>();
 	    System.out.println("bbb");
-	    try (BufferedReader br = new BufferedReader(new FileReader(Paths.get("/home/geronimo/data/own/cerealssemi.csv").toString()))) {
+	    try (BufferedReader br = new BufferedReader(new FileReader(Paths.get("c:/projects/cereal.csv").toString()))) {
 	    	
 	        String line;
 	        Integer i=0;
 	        while ((line = br.readLine()) != null) {
-	        	String[] values = line.split(";",-1);
+	        	String[] values = line.split(",",-1);
        	
 	        	records.add(values);
 
