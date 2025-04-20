@@ -19,6 +19,10 @@ public class ItemsData {
 	@ManyToOne
     @JoinColumn(name="id_item", nullable=false)
     private Items item;
+	
+	@ManyToOne
+    @JoinColumn(name="id_item_name", nullable=true)
+    private ItemsDataName itemsDataName;
     
 	public ItemsData() {
 	}
@@ -52,6 +56,15 @@ public class ItemsData {
 
 	public void setItem(Items item) {
 		this.item = item;
+	}
+	
+
+	public ItemsDataName getItemsDataName() {
+		return itemsDataName;
+	}
+
+	public void setItemsDataName(ItemsDataName itemsDataName) {
+		this.itemsDataName = itemsDataName;
 	}
 
 	@Override

@@ -1,6 +1,8 @@
 package com.example.stats.repository;
 
 import java.util.List;
+import com.example.stats.pojo.ListLeft;
+import com.example.stats.pojo.Listing;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -16,11 +18,12 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 @Repository
 public interface ItemsDataRepository extends CrudRepository<ItemsData, Integer> {	
 	
-	@Query(value= "SELECT itdat.* FROM items_data itdat "
+	@Query(value= "SELECT itdat.id as id,itdat.id_item as iditem,itdname.name_data as namedata,data as data FROM items_data itdat "
 			     +"LEFT JOIN items it ON (it.id=itdat.id_item) "
+			     +"LEFT JOIN items_data_name itdname ON (itdname.id=itdat.id_item_name) "
 			     +"WHERE it.mainitem_id = :mainitemid ORDER BY itdat.id_item ASC"
 			,nativeQuery=true)	
-	public List<ItemsData> getItemsAndData(String mainitemid);
+	public List<Listing> getItemsAndData(String mainitemid);
 	
 	@Query(value= "SELECT itdat.* FROM items_data itdat "
 		     +"LEFT JOIN items it ON (it.id=itdat.id_item) "
@@ -28,11 +31,13 @@ public interface ItemsDataRepository extends CrudRepository<ItemsData, Integer> 
 		,nativeQuery=true)		
 	public List<ItemsData> getItemsAndNamesForOneItem(String mainitemid, List<String> excludeItemsTop);	
 	
-	@Query(value= "SELECT * FROM items_data itdat2 " 
+	@Query(value= "SELECT itdat2.id as id,itdat2.id_item as iditem,itdname.name_data as namedata,data as data,it.name as iditemname  FROM items_data itdat2 " 
 			     +"LEFT JOIN items it ON (itdat2.id_item = it.id) "
-			     +"WHERE it.mainitem_id = :mainitemid AND it.id IN (:excludeItemsTop) ORDER BY itdat2.id_item ASC"
+			     +"LEFT JOIN items_data_name itdname ON (itdname.id=itdat2.id_item_name) "
+			     +"WHERE it.mainitem_id = :mainitemid AND itdat2.id_item = :itemid ORDER BY itdat2.id_item ASC"
 		,nativeQuery=true)		
-	public List<ItemsData> getItemsAndDataForOneItem(String mainitemid, List<String> excludeItemsTop);
+	public List<ListLeft> getItemsAndDataForOneItem(String mainitemid, String itemid);
+	
 	
 
 }

@@ -69,10 +69,10 @@ public class StatsController {
 	
 	@CrossOrigin(origins = "*")
 	@GetMapping("/oneitemsdata")
-	public String getItemsAndDataForOneItem(@RequestParam String mainitemid, String itemid) throws JsonProcessingException{
+	public String getItemsAndDataForOneItem(@RequestParam String mainitemid, @RequestParam String itemid) throws JsonProcessingException{
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.enable(SerializationFeature.INDENT_OUTPUT);
-		return mapper.writeValueAsString(statserv.getItemsAndDataForOneItem(mainitemid, itemid, this.excludeItemsTop));
+		return mapper.writeValueAsString(statserv.getItemsAndDataForOneItem(mainitemid, itemid));
 	}	
 		
 	
@@ -80,8 +80,8 @@ public class StatsController {
 
 	@CrossOrigin(origins = "*")
 	@GetMapping("/mainitemsimp")
-	public List<String[]> getMainItem() throws FileNotFoundException, IOException {
-		return statserv.generateTables();
+	public void getMainItem() throws FileNotFoundException, IOException {
+		statserv.generateTables();
 	}	
 
 	

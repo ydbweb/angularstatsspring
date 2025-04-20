@@ -14,10 +14,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class ImportData {
 	
-    public List<String[]> generateTables() throws FileNotFoundException, IOException{    
+    public List<String[]> generateTables(String files1) throws FileNotFoundException, IOException{    
     	List<String[]> records=new ArrayList<>();
 	    System.out.println("bbb");
-	    try (BufferedReader br = new BufferedReader(new FileReader(Paths.get("c:/projects/cereal.csv").toString()))) {
+	    try (BufferedReader br = new BufferedReader(new FileReader(Paths.get(files1).toString()))) {
 	    	
 	        String line;
 	        Integer i=0;

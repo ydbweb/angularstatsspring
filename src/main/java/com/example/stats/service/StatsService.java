@@ -20,9 +20,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.stats.entity.Items;
 import com.example.stats.entity.ItemsData;
+import com.example.stats.entity.ItemsDataName;
 import com.example.stats.entity.MainItem;
 import com.example.stats.repository.ImportData;
+import com.example.stats.repository.ItemsDataNameRepository;
 import com.example.stats.pojo.ItemWithNameInt;
+import com.example.stats.pojo.ListLeft;
+import com.example.stats.pojo.Listing;
 import com.example.stats.pojo.MainItemInt;
 import com.example.stats.repository.ItemsDataRepository;
 import com.example.stats.repository.ItemsRepository;
@@ -44,7 +48,10 @@ public class StatsService {
     ItemsRepository it;
 	
 	@Autowired
-	ItemsDataRepository itdat;	
+	ItemsDataRepository itdat;
+	
+	@Autowired
+	ItemsDataNameRepository itnamedata;
 	
     @PersistenceContext // or even @Autowired
     private EntityManager em;	
@@ -70,8 +77,8 @@ public class StatsService {
 	}	
 	
 	
-	public List<ItemsData> getItemsAndData(String mainitemid){
-		List<ItemsData> mi = itdat.getItemsAndData(mainitemid);
+	public List<Listing> getItemsAndData(String mainitemid){
+		List<Listing> mi = itdat.getItemsAndData(mainitemid);
 		
 		return mi;
 	}	
@@ -82,11 +89,8 @@ public class StatsService {
 		return mi;
 	}		
 	
-	public List<ItemsData> getItemsAndDataForOneItem(String mainitemid,String itemid,List<String> excludeItemsTop){
-		List<String> excludeItemsTopBuffer=new ArrayList<>();
-		excludeItemsTopBuffer.addAll(excludeItemsTop);
-		excludeItemsTopBuffer.add(itemid);
-		List<ItemsData> mi = itdat.getItemsAndDataForOneItem(mainitemid,excludeItemsTopBuffer);
+	public List<ListLeft> getItemsAndDataForOneItem(String mainitemid,String itemid){
+		List<ListLeft> mi = itdat.getItemsAndDataForOneItem(mainitemid,itemid);
 		
 		return mi;
 	}			
@@ -94,34 +98,54 @@ public class StatsService {
 	
 	
 	@Transactional
-	public List<String[]> generateTables() throws FileNotFoundException, IOException {
-		List<String[]> recs=impDat.generateTables();
-		
-		int[] listtables= {0,1,2,3,4,5,6};		
-		//recs.get(0);
-		MainItem mainitem = new MainItem();
-		mainitem.setName("cereals");
-		em.persist(mainitem);		
-		
-		for (int i =0; i < 7;i++) {
-			String[] tab1=recs.get(0);
-			Items item=new Items();
-			item.setMainitem(mainitem);
-			item.setName(tab1[i]);
-			em.persist(item);						
-			for (int j =1; j < recs.size();j++) {
-				ItemsData it = new ItemsData();
-				it.setItem(item);				
-				String[] tab2=recs.get(j);								
-				it.setData(tab2[i]);					
-				em.persist(it);	
-				
-			}				
+	public void generateTables() throws FileNotFoundException, IOException {
+		String[] recordsfiles= new String[3];
+		recordsfiles[0]="c:/projects/cereal.csv";
+		recordsfiles[1]="c:/projects/cars.csv";
+		recordsfiles[2]="c:/projects/laptop.csv";
+		String[] recordsnames= new String[3];
+		recordsnames[0]="cereal";
+		recordsnames[1]="cars";
+		recordsnames[2]="laptop";		
+		List<String[]> recs;
+		for (int z=0;z<recordsfiles.length;z++) {
+			recs=impDat.generateTables(recordsfiles[z]);
+			
+			
+			
+			int[] listtables= {0,1,2,3,4,5,6};		
+			//recs.get(0);
+			MainItem mainitem = new MainItem();
+			mainitem.setName(recordsnames[z]);
+			em.persist(mainitem);	
+			 
+			
+			for (int i =0; i < 7;i++) {
+				String[] tab1=recs.get(0);
+				Items item=new Items();
+				item.setMainitem(mainitem);
+				item.setName(tab1[i]);
+				em.persist(item);						
+				for (int j =1; j < recs.size();j++) {
+					ItemsData it = new ItemsData();
+					it.setItem(item);		
+					String[] tab2=recs.get(j);	
+					ItemsDataName itemsdataname = new ItemsDataName();
+	
+					if (itnamedata.compareTsringToDb(tab2[0]).size()==0) {
+						//itemsdataname.setName_data(tab2[0].replace("_", ""));
+						itemsdataname.setName_data(tab2[0]);
+						em.persist(itemsdataname);					
+					}else {
+						it.setItemsDataName(itnamedata.compareTsringToDb(tab2[0]).get(0));
+					}
+					it.setData(tab2[i]);
+					if (i!=0)
+					em.persist(it);	
+					
+				}				
+			}
 		}
-		
-									
-		
-		return recs;
+	
 	}
-
 }
