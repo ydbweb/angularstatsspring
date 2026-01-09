@@ -13,6 +13,7 @@ import com.example.stats.repository.ItemsDataNameRepository;
 import com.example.stats.repository.ItemsDataRepository;
 import com.example.stats.repository.ItemsRepository;
 import com.example.stats.repository.MainItemRepository;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -42,39 +43,98 @@ class StatsServiceTest {
     @InjectMocks
     StatsService statsService;
 
+    // Static arrays for dummy data
+    static MainItemInt[] mainItemIntArray;
+    static ItemWithNameInt[] itemWithNameIntArray;
+    static Listing[] listingArray;
+    static ListLeft[] listLeftArray;
+    static Items[] itemsArray;
+    static ItemsData[] itemsDataArray;
+
+    // Mock implementations for interface instantiation with fields
+    static class MainItemIntImpl implements MainItemInt {
+        private String id, name, itemname, itemid;
+        public MainItemIntImpl(String id, String name, String itemname, String itemid) {
+            this.id = id; this.name = name; this.itemname = itemname; this.itemid = itemid;
+        }
+        public String getId() { return id; }
+        public String getName() { return name; }
+        public String getItemname() { return itemname; }
+        public String getItemid() { return itemid; }
+    }
+    static class ItemWithNameIntImpl implements ItemWithNameInt {
+        private String mainitemname, itemname;
+        public ItemWithNameIntImpl(String mainitemname, String itemname) {
+            this.mainitemname = mainitemname; this.itemname = itemname;
+        }
+        public String getMainitemname() { return mainitemname; }
+        public String getItemname() { return itemname; }
+    }
+    static class ListingImpl implements Listing {
+        private String id, namedata, data, iditem;
+        public ListingImpl(String id, String namedata, String data, String iditem) {
+            this.id = id; this.namedata = namedata; this.data = data; this.iditem = iditem;
+        }
+        public String getId() { return id; }
+        public String getNamedata() { return namedata; }
+        public String getData() { return data; }
+        public String getIditem() { return iditem; }
+    }
+    static class ListLeftImpl implements ListLeft {
+        private String id, namedata, data, iditem, iditemname;
+        public ListLeftImpl(String id, String namedata, String data, String iditem, String iditemname) {
+            this.id = id; this.namedata = namedata; this.data = data; this.iditem = iditem; this.iditemname = iditemname;
+        }
+        public String getId() { return id; }
+        public String getNamedata() { return namedata; }
+        public String getData() { return data; }
+        public String getIditem() { return iditem; }
+        public String getIditemname() { return iditemname; }
+    }
+
+    @BeforeAll
+    static void initTestArrays() {
+        mainItemIntArray = new MainItemInt[] {
+            new MainItemIntImpl("id1", "name1", "itemname1", "itemid1"),
+            new MainItemIntImpl("id2", "name2", "itemname2", "itemid2"),
+            new MainItemIntImpl("id3", "name3", "itemname3", "itemid3")
+        };
+        itemWithNameIntArray = new ItemWithNameInt[] {
+            new ItemWithNameIntImpl("mainitemname1", "itemname1"),
+            new ItemWithNameIntImpl("mainitemname2", "itemname2")
+        };
+        listingArray = new Listing[] {
+            new ListingImpl("id1", "namedata1", "data1", "iditem1"),
+            new ListingImpl("id2", "namedata2", "data2", "iditem2"),
+            new ListingImpl("id3", "namedata3", "data3", "iditem3"),
+            new ListingImpl("id4", "namedata4", "data4", "iditem4")
+        };
+        listLeftArray = new ListLeft[] {
+            new ListLeftImpl("id1", "namedata1", "data1", "iditem1", "iditemname1"),
+            new ListLeftImpl("id2", "namedata2", "data2", "iditem2", "iditemname2")
+        };
+        itemsArray = new Items[3];
+        for (int i = 0; i < itemsArray.length; i++) {
+            Items item = new Items();
+            item.setName("itemName" + (i+1));
+            itemsArray[i] = item;
+        }
+        itemsDataArray = new ItemsData[2];
+        for (int i = 0; i < itemsDataArray.length; i++) {
+            ItemsData data = new ItemsData();
+            data.setData("data" + (i+1));
+            itemsDataArray[i] = data;
+        }
+    }
+
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
     }
 
-    // Mock implementations for interface instantiation
-    static class MainItemIntImpl implements MainItemInt {
-        public String getId() { return "id"; }
-        public String getName() { return "name"; }
-        public String getItemname() { return "itemname"; }
-        public String getItemid() { return "itemid"; }
-    }
-    static class ItemWithNameIntImpl implements ItemWithNameInt {
-        public String getMainitemname() { return "mainitemname"; }
-        public String getItemname() { return "itemname"; }
-    }
-    static class ListingImpl implements Listing {
-        public String getId() { return "id"; }
-        public String getNamedata() { return "namedata"; }
-        public String getData() { return "data"; }
-        public String getIditem() { return "iditem"; }
-    }
-    static class ListLeftImpl implements ListLeft {
-        public String getId() { return "id"; }
-        public String getNamedata() { return "namedata"; }
-        public String getData() { return "data"; }
-        public String getIditem() { return "iditem"; }
-        public String getIditemname() { return "iditemname"; }
-    }
-
     @Test
     void testGetMainItemsReturnsList() {
-        List<MainItemInt> expected = Arrays.asList(new MainItemIntImpl(), new MainItemIntImpl());
+        List<MainItemInt> expected = Arrays.asList(mainItemIntArray);
         when(mirep.getMainItems(anyList())).thenReturn(expected);
         List<MainItemInt> result = statsService.getMainItems(Collections.singletonList("exclude"));
         assertEquals(expected, result);
@@ -82,7 +142,7 @@ class StatsServiceTest {
 
     @Test
     void testGetItemsAndMainItemNameReturnsList() {
-        List<ItemWithNameInt> expected = Arrays.asList(new ItemWithNameIntImpl(), new ItemWithNameIntImpl());
+        List<ItemWithNameInt> expected = Arrays.asList(itemWithNameIntArray);
         when(it.getItemsAndMainItemName(anyString())).thenReturn(expected);
         List<ItemWithNameInt> result = statsService.getItemsAndMainItemName("iditem");
         assertEquals(expected, result);
@@ -90,7 +150,7 @@ class StatsServiceTest {
 
     @Test
     void testGetItemsReturnsList() {
-        List<Items> expected = Arrays.asList(new Items(), new Items());
+        List<Items> expected = Arrays.asList(itemsArray);
         when(it.getItems(anyString(), anyList())).thenReturn(expected);
         List<Items> result = statsService.getItems("mainitemid", Collections.singletonList("exclude"));
         assertEquals(expected, result);
@@ -98,7 +158,7 @@ class StatsServiceTest {
 
     @Test
     void testGetItemsAndDataReturnsList() {
-        List<Listing> expected = Arrays.asList(new ListingImpl(), new ListingImpl());
+        List<Listing> expected = Arrays.asList(listingArray);
         when(itdat.getItemsAndData(anyString())).thenReturn(expected);
         List<Listing> result = statsService.getItemsAndData("mainitemid");
         assertEquals(expected, result);
@@ -106,7 +166,7 @@ class StatsServiceTest {
 
     @Test
     void testGetItemsAndNamesForOneItemReturnsList() {
-        List<ItemsData> expected = Arrays.asList(new ItemsData(), new ItemsData());
+        List<ItemsData> expected = Arrays.asList(itemsDataArray);
         when(itdat.getItemsAndNamesForOneItem(anyString(), anyList())).thenReturn(expected);
         List<ItemsData> result = statsService.getItemsAndNamesForOneItem("mainitemid", Collections.singletonList("exclude"));
         assertEquals(expected, result);
@@ -114,7 +174,7 @@ class StatsServiceTest {
 
     @Test
     void testGetItemsAndDataForOneItemReturnsList() {
-        List<ListLeft> expected = Arrays.asList(new ListLeftImpl(), new ListLeftImpl());
+        List<ListLeft> expected = Arrays.asList(listLeftArray);
         when(itdat.getItemsAndDataForOneItem(anyString(), anyString())).thenReturn(expected);
         List<ListLeft> result = statsService.getItemsAndDataForOneItem("mainitemid", "itemid");
         assertEquals(expected, result);
