@@ -182,8 +182,6 @@ class StatsServiceTest {
 
     @Test
     void testGenerateTablesSuccess() throws IOException {
-        String[] files = {"c:/projects/cereal.csv", "c:/projects/cars.csv", "c:/projects/laptop.csv"};
-        String[] names = {"cereal", "cars", "laptop"};
         List<String[]> recs = new ArrayList<>();
         String[] header = {"col1", "col2", "col3", "col4", "col5", "col6", "col7"};
         String[] row = {"row1", "row2", "row3", "row4", "row5", "row6", "row7"};
